@@ -52,7 +52,6 @@ const habits = [
     description: "30 minutes of exercise",
     streak: 5,
     icon: "bi-lightning-charge",
-    color: "primary",
     progress: 75,
     done: true
   },
@@ -61,24 +60,34 @@ const habits = [
     description: "Daily reading habit",
     streak: 12,
     icon: "bi-book",
-    color: "warning",
     progress: 50,
     done: false
   }
 ];
 
 // ✅ Render Habits
+function getHabitColor(progress) {
+  if (progress < 33) {
+    return "danger";
+  } else if (progress < 66) {
+    return "warning";
+  } else {
+    return "primary";
+  }
+}
+
 function renderHabits() {
   const container = document.getElementById("habitsList");
   container.innerHTML = ""; // Clear before rendering
   habits.forEach(habit => {
+    const color = getHabitColor(habit.progress);
     const card = `
       <div class="col-12 col-sm-6 col-lg-4">
         <div class="card p-3 rounded-3 shadow-sm border">
           <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
-              <div class="bg-${habit.color}-subtle rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                <i class="bi ${habit.icon} text-${habit.color}"></i>
+              <div class="bg-${color}-subtle rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                <i class="bi ${habit.icon} text-${color}"></i>
               </div>
               <div>
                 <h6 class="mb-0">${habit.title}</h6>
@@ -93,7 +102,7 @@ function renderHabits() {
             </div>
           </div>
           <div class="progress mt-2" style="height: 6px;">
-            <div class="progress-bar bg-${habit.color}" style="width: ${habit.progress}%;"></div>
+            <div class="progress-bar bg-${color}" style="width: ${habit.progress}%;"></div>
           </div>
         </div>
       </div>`;
