@@ -12,7 +12,7 @@ import json
 
 TOKEN = tstp.get_api_token()  # Put your bot token in .env
 
-WEBAPP_URL = "https://yourserver.com"  # Or http://localhost:8080 when testing
+WEBAPP_URL = "https://gofka81.github.io/habbit_tracker_bot/"
 
 # Command handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
