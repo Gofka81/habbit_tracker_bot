@@ -1,0 +1,28 @@
+name: Deploy WebApp to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Trigger deployment when pushing to the main branch
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # If you had a build process (e.g., npm install && npm run build), add it here
+
+      - name: Upload static files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './webapp' # Directory containing index.html
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
