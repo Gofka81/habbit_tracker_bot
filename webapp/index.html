@@ -20,6 +20,11 @@
 <style>
 body {
   padding: 1rem;
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+}
+.card {
+  background-color: var(--tg-theme-secondary-bg-color);
 }
 .add-button {
   position: fixed;
@@ -36,7 +41,7 @@ body {
 </div>
 
 <!-- ✅ Add Habit Button -->
-<button id="addHabitBtn" class="btn btn-primary rounded-circle add-button p-3">
+<button id="addHabitBtn" class="btn add-button p-3" style="background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color)">
   <i class="bi bi-plus"></i>
 </button>
 
@@ -65,17 +70,20 @@ const habits = [
   }
 ];
 
-// ✅ Render Habits
+// ✅ Color based on progress
 function getHabitColor(progress) {
-  if (progress < 33) {
-    return "danger";
+  if (progress === 100) {
+    return "var(--tg-theme-button-color)";           // Done
+  } else if (progress < 33) {
+    return "var(--tg-theme-destructive-text-color)"; // Red
   } else if (progress < 66) {
-    return "warning";
+    return "var(--tg-theme-subtitle-text-color)";     // Yellow
   } else {
-    return "primary";
+    return "var(--tg-theme-accent-text-color)";       // Blue
   }
 }
 
+// ✅ Render Habits
 function renderHabits() {
   const container = document.getElementById("habitsList");
   container.innerHTML = ""; // Clear before rendering
@@ -83,26 +91,30 @@ function renderHabits() {
     const color = getHabitColor(habit.progress);
     const card = `
       <div class="col-12 col-sm-6 col-lg-4">
-        <div class="card p-3 rounded-3 shadow-sm border">
+        <div class="card p-3 rounded-3 shadow-sm border" style="border-color:${color}">
           <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-2">
-              <div class="bg-${color}-subtle rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                <i class="bi ${habit.icon} text-${color}"></i>
+              <div class="rounded-circle d-flex align-items-center justify-content-center"
+                style="width: 32px; height: 32px; background-color:${color}">
+                <i class="bi ${habit.icon}" style="color: var(--tg-theme-bg-color)"></i>
               </div>
               <div>
                 <h6 class="mb-0">${habit.title}</h6>
-                <small class="text-muted">${habit.description}</small>
+                <small style="color: var(--tg-theme-subtitle-text-color)">${habit.description}</small>
               </div>
             </div>
             <div class="d-flex align-items-center gap-2">
-              <small class="text-muted">🔥 ${habit.streak} days</small>
-              <button class="btn ${habit.done ? 'btn-success' : 'btn-outline-success'} btn-sm rounded-circle">
+              <small style="color: var(--tg-theme-subtitle-text-color)">🔥 ${habit.streak}d</small>
+              <button class="btn btn-sm rounded-circle" style="
+                background-color: ${habit.done ? 'var(--tg-theme-button-color)' : 'var(--tg-theme-secondary-bg-color)'};
+                color: ${habit.done ? 'var(--tg-theme-button-text-color)' : 'var(--tg-theme-text-color)'};
+              ">
                 <i class="bi ${habit.done ? 'bi-check2' : 'bi-circle'}"></i>
               </button>
             </div>
           </div>
           <div class="progress mt-2" style="height: 6px;">
-            <div class="progress-bar bg-${color}" style="width: ${habit.progress}%;"></div>
+            <div class="progress-bar" style="width: ${habit.progress}%; background-color: ${color}"></div>
           </div>
         </div>
       </div>`;
@@ -115,15 +127,15 @@ document.getElementById("addHabitBtn").addEventListener("click", () => {
   alert("Add Habit Button Clicked!");
 });
 
+// ✅ Initial Render
 renderHabits();
 
-// ✅ Theme
-function applyTheme() {
-  const theme = window.Telegram.WebApp.themeParams;
-  document.body.style.backgroundColor = theme.bg_color || "#ffffff";
-  document.body.style.color = theme.text_color || "#000000";
+// ✅ Theme Sync
+function setThemeClass() {
+  document.documentElement.className = Telegram.WebApp.colorScheme;
 }
-applyTheme();
+Telegram.WebApp.onEvent('themeChanged', setThemeClass);
+setThemeClass();
 </script>
 <!-- ✅ Optional JS: Bootstrap Bundle for responsiveness-->
 <script
